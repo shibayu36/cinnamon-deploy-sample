@@ -10,16 +10,16 @@ Vagrant.configure("2") do |config|
   config.vm.box = "precise32"
   config.vm.box_url = "http://files.vagrantup.com/precise32.box"
 
-  config.vm.define :web1 do |web1_config|
-    web1_config.vm.network "192.168.1.12"
-    web1_config.vm.network :forwarded_port, host: 8083, guest: 8083
-    web1_config.vm.provision :shell, :path => "script/setup.sh"
+  config.vm.define :web1 do |web|
+    web.vm.network "192.168.1.11"
+    web.vm.network :forwarded_port, host: 8001, guest: 8000
+    web.vm.provision :shell, :path => "script/setup.sh"
   end
 
-  config.vm.define :web2 do |web2_config|
-    web2_config.vm.network "192.168.1.13"
-    web2_config.vm.network :forwarded_port, host: 8084, guest: 8083
-    web2_config.vm.provision :shell, :path => "script/setup.sh"
+  config.vm.define :web2 do |web|
+    web.vm.network "192.168.1.12"
+    web.vm.network :forwarded_port, host: 8002, guest: 8000
+    web.vm.provision :shell, :path => "script/setup.sh"
   end
 
   # The url from where the 'config.vm.box' box will be fetched if it
