@@ -14,15 +14,12 @@ set password => 'vagrant';
 set application => $application;
 set repository  => 'git://github.com/shibayu36/cinnamon-deploy-sample.git';
 
-set current_dir => sub {
-    return get('deploy_to') . '/current';
+set deploy_to => sub {
+    return '/home/vagrant/' . get('application');
 };
-
-set releases_dir => sub {
-    return get('deploy_to') . '/releases';
+set daemontools_dir => sub {
+    return '/etc/service/' . get('application');
 };
-
-set cpan_lib => "/home/vagrant/lib/$application";
 
 role production => ['cinnamon-deploy-sample-web1', 'cinnamon-deploy-sample-web2'], {
     deploy_to         => "/home/vagrant/$application",
@@ -33,29 +30,14 @@ role production => ['cinnamon-deploy-sample-web1', 'cinnamon-deploy-sample-web2'
 # Tasks
 task update => sub {
     my ($host, @args) = @_;
-    my $deploy_to    = get('deploy_to');
-    my $release_path = get('releases_dir');
-    my $current_path = get('current_dir');
-    my $current_release = $release_path . "/" . time;
 
-    my $branch       = "origin/" . get('branch');
-    my $repository   = get 'repository';
-
-    # Executed on remote host
+    my $repository = get('repository');
+    my $deploy_to = get('deploy_to');
+    my $branch = 'master';
     remote {
-        run "git clone --depth 0 $repository $current_release";
-        run "cd $current_release && git fetch origin && git checkout -q $branch && git submodule update --init";
-        run "ln -nsf $current_release $current_path";
-
-        # delete old release
-        my ($stdout) = run "ls -x $release_path";
-        my $releases = [sort {$b <=> $a} split /\s+/, $stdout];
-        return if scalar @$releases < 5;
-
-        my @olds = splice @$releases, 5;
-        for my $dir (@olds) {
-            run "rm -rf $deploy_to/releases/$dir";
-        }
+        run "if [ -d $deploy_to ]; then " .
+            "cd $deploy_to && git fetch origin && git checkout -q origin/$branch; " .
+            "else git clone -q $repository $deploy_to && cd $deploy_to && git checkout -q origin/$branch; fi";
     } $host;
 };
 
@@ -100,12 +82,10 @@ task daemontools => {
 
 task installdeps => sub {
     my ($host, @args) = @_;
-    my $current  = get('current_dir');
-    my $cpan_lib = get('cpan_lib');
+    my $deploy_to  = get('deploy_to');
 
     remote {
-        run "mkdir -p $cpan_lib";
-        run "cd $current && cpanm --notest --verbose -L $cpan_lib --installdeps . < /dev/null; true";
+        run "cd $deploy_to && carton install --deployment";
     } $host;
 };
 
