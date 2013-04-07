@@ -41,16 +41,25 @@ task update => sub {
     } $host;
 };
 
+task installdeps => sub {
+    my ($host, @args) = @_;
+    my $deploy_to  = get('deploy_to');
+
+    remote {
+        run "cd $deploy_to && carton install";
+    } $host;
+};
+
 task daemontools => {
     setup => sub {
         my ($host, @args) = @_;
         my $daemontools_dir   = get('daemontools_dir');
-        my $current_path      = get('current_dir');
+        my $deploy_to      = get('deploy_to');
 
         remote {
             sudo "mkdir -p $daemontools_dir/log/main";
-            sudo "ln -sf $current_path/bin/run $daemontools_dir/run";
-            sudo "ln -sf $current_path/bin/log/run $daemontools_dir/log/run";
+            sudo "ln -sf $deploy_to/bin/run $daemontools_dir/run";
+            sudo "ln -sf $deploy_to/bin/log/run $daemontools_dir/log/run";
             sudo "chown -R vagrant:vagrant $daemontools_dir/log";
         } $host;
     },
@@ -78,13 +87,4 @@ task daemontools => {
             sudo "svc -t $daemontools_dir";
         } $host;
     },
-};
-
-task installdeps => sub {
-    my ($host, @args) = @_;
-    my $deploy_to  = get('deploy_to');
-
-    remote {
-        run "cd $deploy_to && carton install";
-    } $host;
 };
