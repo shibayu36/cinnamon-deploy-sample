@@ -11,13 +11,13 @@ Vagrant.configure("2") do |config|
   config.vm.box_url = "http://files.vagrantup.com/precise32.box"
 
   config.vm.define :web1 do |web|
-    web.vm.network "192.168.1.11"
+    web.vm.network :private_network, ip: "192.168.1.11"
     web.vm.network :forwarded_port, host: 8001, guest: 8000
     web.vm.provision :shell, :path => "script/setup.sh"
   end
 
   config.vm.define :web2 do |web|
-    web.vm.network "192.168.1.12"
+    web.vm.network :private_network, ip: "192.168.1.12"
     web.vm.network :forwarded_port, host: 8002, guest: 8000
     web.vm.provision :shell, :path => "script/setup.sh"
   end
