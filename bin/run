@@ -1,0 +1,10 @@
+#!/bin/sh
+exec 2>&1
+export PLACK_ENV=production
+export APPROOT=/home/vagrant/cinnamon-deploy-sample
+cd $APPROOT || exit 1
+
+exec setuidgid vagrant \
+    carton exec -- plackup -p 8000 -MPlack::App::Directory -s Starlet \
+    --max-workers=3 \
+    -e 'Plack::App::Directory->new({root => "./static/"})->to_app'
