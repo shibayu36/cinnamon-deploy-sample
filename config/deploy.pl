@@ -85,17 +85,6 @@ task installdeps => sub {
     my $deploy_to  = get('deploy_to');
 
     remote {
-        run "cd $deploy_to && carton install --deployment";
-    } $host;
-};
-
-task clean => sub {
-    my ($host, @args) = @_;
-    my $deploy_to = get('deploy_to');
-    my $cpan_lib = get('cpan_lib');
-
-    remote {
-        run "rm -rf $deploy_to";
-        run "rm -rf $cpan_lib";
+        run "cd $deploy_to && carton install";
     } $host;
 };
