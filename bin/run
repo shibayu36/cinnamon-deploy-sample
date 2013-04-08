@@ -4,7 +4,10 @@ export PLACK_ENV=production
 export APPROOT=/home/vagrant/cinnamon-deploy-sample
 cd $APPROOT || exit 1
 
+CPANLIB=$APPROOT/local
+export PERL5LIB=$CPANLIB/lib/perl5:$CPANLIB/lib/perl5/x86_64-linux
+
 exec setuidgid vagrant \
-    carton exec -- plackup -p 8000 -MPlack::App::Directory -s Starlet \
+    $CPANLIB/bin/plackup -p 8000 -MPlack::App::Directory -s Starlet \
     --max-workers=3 \
     -e 'Plack::App::Directory->new({root => "./static/"})->to_app'
