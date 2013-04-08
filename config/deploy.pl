@@ -46,7 +46,7 @@ task installdeps => sub {
     my $deploy_to  = get('deploy_to');
 
     remote {
-        run "cd $deploy_to && cpanm --verbose -L local --mirror '$deploy_to/cpan' --mirror-only --installdeps . < /dev/null; true";
+        run "cd $deploy_to && cpanm -n -L local --mirror '$deploy_to/cpan' --mirror-only --installdeps . < /dev/null; true";
     } $host;
 };
 
