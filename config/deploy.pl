@@ -46,7 +46,7 @@ task installdeps => sub {
     my $deploy_to  = get('deploy_to');
 
     remote {
-        run "cd $deploy_to && carton install";
+        run "cd $deploy_to && carton install --cached";
     } $host;
 };
 
