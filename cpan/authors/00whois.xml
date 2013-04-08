@@ -126,6 +126,11 @@
     <has_cpandir>1</has_cpandir>
   </cpanid>
   <cpanid>
+    <id>GWYN</id>
+    <type>author</type>
+    <has_cpandir>1</has_cpandir>
+  </cpanid>
+  <cpanid>
     <id>KAZUHO</id>
     <type>author</type>
     <has_cpandir>1</has_cpandir>
