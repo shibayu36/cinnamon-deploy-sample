@@ -22,6 +22,12 @@ Vagrant.configure("2") do |config|
     web.vm.provision :shell, :path => "script/setup.sh"
   end
 
+  config.vm.define :web3 do |web|
+    web.vm.network :private_network, ip: "192.168.1.13"
+    web.vm.network :forwarded_port, host: 8003, guest: 8000
+    web.vm.provision :shell, :path => "script/setup.sh"
+  end
+
   # The url from where the 'config.vm.box' box will be fetched if it
   # doesn't already exist on the user's system.
   # config.vm.box_url = "http://domain.com/path/to/above.box"
