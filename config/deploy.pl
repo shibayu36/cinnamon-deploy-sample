@@ -8,7 +8,6 @@ my $application = 'cinnamon-deploy-sample';
 
 # It's required if you want to login to remote host
 set user     => 'vagrant';
-set password => 'vagrant';
 
 # User defined params to use later
 set application => $application;
@@ -21,7 +20,11 @@ set daemontools_dir => sub {
     return '/etc/service/' . get('application');
 };
 
-role production => ['cinnamon-deploy-sample-web1', 'cinnamon-deploy-sample-web2'], {
+set concurrency => {
+    update => 2,
+};
+
+role production => ['cinnamon-deploy-sample-web1', 'cinnamon-deploy-sample-web2', 'cinnamon-deploy-sample-web3'], {
     deploy_to         => "/home/vagrant/$application",
     branch            => "master",
     daemontools_dir   => "/etc/service/$application",
@@ -47,6 +50,15 @@ task installdeps => sub {
 
     remote {
         run "cd $deploy_to && cpanm --quiet -n -L local --mirror '$deploy_to/cpan' --mirror-only --installdeps . < /dev/null; true";
+    } $host;
+};
+
+task clean => sub {
+    my ($host, @args) = @_;
+    my $deploy_to  = get('deploy_to');
+
+    remote {
+        run "rm -rf $deploy_to/local";
     } $host;
 };
 
