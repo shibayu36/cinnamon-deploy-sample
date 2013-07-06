@@ -44,6 +44,16 @@ task update => sub {
     } $host;
 };
 
+task echo => sub {
+    my ($host) = @_;
+
+    run "echo", "1";
+    remote {
+        run "echo 1";
+        run "echo 2";
+    } $host;
+};
+
 task installdeps => sub {
     my ($host, @args) = @_;
     my $deploy_to  = get('deploy_to');
