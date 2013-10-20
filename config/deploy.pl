@@ -65,18 +65,23 @@ task installdeps => sub {
 
 task clean => sub {
     my ($host, @args) = @_;
-    my $deploy_to  = get('deploy_to');
+    my $deploy_to   = get('deploy_to');
+    my $application = get('application');
 
     remote {
-        run "rm -rf $deploy_to/local";
+        run "rm -rf $deploy_to";
+        sudo "mv /etc/service/$application /etc/service/.$application";
+        sudo "svc -x /etc/service/.$application /etc/service/.$application/log";
+        sudo "svc -d /etc/service/.$application /etc/service/.$application/log";
+        sudo "rm -rf /etc/service/.$application";
     } $host;
 };
 
 task daemontools => {
     setup => sub {
         my ($host, @args) = @_;
-        my $daemontools_dir   = get('daemontools_dir');
-        my $deploy_to      = get('deploy_to');
+        my $daemontools_dir = get('daemontools_dir');
+        my $deploy_to       = get('deploy_to');
 
         remote {
             sudo "mkdir -p $daemontools_dir/log/main";
