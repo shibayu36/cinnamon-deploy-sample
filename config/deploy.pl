@@ -31,6 +31,21 @@ role production => ['cinnamon-deploy-sample-web1', 'cinnamon-deploy-sample-web2'
 };
 
 # Tasks
+task setup => sub {
+    my ($host) = @_;
+    call "update", $host;
+    call "installdeps", $host;
+    call "daemontools:setup", $host;
+    call "daemontools:start", $host;
+};
+
+task deploy => sub {
+    my ($host) = @_;
+    call "update", $host;
+    call "installdeps", $host;
+    call "daemontools:restart", $host;
+};
+
 task update => sub {
     my ($host) = @_;
 
