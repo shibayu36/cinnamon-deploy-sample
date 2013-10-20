@@ -32,7 +32,7 @@ role production => ['cinnamon-deploy-sample-web1', 'cinnamon-deploy-sample-web2'
 
 # Tasks
 task update => sub {
-    my ($host, @args) = @_;
+    my ($host) = @_;
 
     my $repository = get('repository');
     my $deploy_to = get('deploy_to');
@@ -55,7 +55,7 @@ task echo => sub {
 };
 
 task installdeps => sub {
-    my ($host, @args) = @_;
+    my ($host) = @_;
     my $deploy_to  = get('deploy_to');
 
     remote {
@@ -64,7 +64,7 @@ task installdeps => sub {
 };
 
 task clean => sub {
-    my ($host, @args) = @_;
+    my ($host) = @_;
     my $deploy_to   = get('deploy_to');
     my $application = get('application');
 
@@ -79,7 +79,7 @@ task clean => sub {
 
 task daemontools => {
     setup => sub {
-        my ($host, @args) = @_;
+        my ($host) = @_;
         my $daemontools_dir = get('daemontools_dir');
         my $deploy_to       = get('deploy_to');
 
@@ -91,7 +91,7 @@ task daemontools => {
         } $host;
     },
     start => sub {
-        my ($host, @args) = @_;
+        my ($host) = @_;
         my $daemontools_dir = get('daemontools_dir');
 
         remote {
@@ -99,7 +99,7 @@ task daemontools => {
         } $host;
     },
     stop => sub {
-        my ($host, @args) = @_;
+        my ($host) = @_;
         my $daemontools_dir = get('daemontools_dir');
 
         remote {
@@ -107,7 +107,7 @@ task daemontools => {
         } $host;
     },
     restart => sub {
-        my ($host, @args) = @_;
+        my ($host) = @_;
         my $daemontools_dir = get('daemontools_dir');
 
         remote {
